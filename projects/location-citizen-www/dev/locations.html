@@ -166,7 +166,6 @@
                             <li class="current"><a href="#" title="">Headquarters</a></li>
                             <li><a href="#" title="">Regional Office</a></li>
                             <li><a href="#" title="">Local Office</a></li>
-                            <!-- <li><a href="admin.html">New Office</a></li> -->
                             <li><a href="#" data-toggle="collapse" data-target="#adminform">ATMs</a></li>
 
                         </ul>
@@ -294,7 +293,7 @@
         function getOfficeDetails (mapMarker, item){
             var office_id = item.id;
             $.ajax ({
-                url: 'http://localhost:8001/locations/phone/' + office_id,
+                url: 'API_BACKEND_URL' + '/phone/' + office_id,
                 dataType: 'json'
             }).done ( function (data){
                 mapMarker.bindPopup('<b>' + item.name + '</b><br>' + item.type + '<br>' + data.phone);
@@ -317,14 +316,10 @@
             }).done(function(data) {
                 data.slice(0, data.length).map(function(item) {
                     var marker = L.marker([item.location.lat, item.location.lng]).addTo(map);
-                    //marker.bindPopup('<b>' + item.name + '</b><br>' + item.type);
+
                     // CALL OUT TO OFFICE DETAIL SERVICE
                     getOfficeDetails(marker,item);
-                    // marker.on('click', function (event){ 
 
-                        
-                    //     // marker.bindPopup('<b>' + item.name + '</b><br>' + item.type);
-                    // });
                 });
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log( 'Error:' + JSON.stringify(textStatus));

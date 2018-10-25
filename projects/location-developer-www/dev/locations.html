@@ -18,7 +18,7 @@
     </style>
 
     <!-- Keycloak Adapter Start-->
-    <script src="SSO_URL/auth/js/keycloak.js"></script>
+
     <!-- Keycloak Adapter End -->
     
     <!--[if lt IE 9]>
@@ -106,7 +106,7 @@
                               <div id="mapid" ></div>
                           </p>
                           <!-- Keycloak Login Start -->
-                          <p><a id="loginUrl" href="#" class="btn btn-primary">Sign In to access the Location API Service</a></p>
+                  
                           <!-- Keycloak Login End -->
                        </div>
                       </div>
@@ -166,7 +166,6 @@
                             <li class="current"><a href="#" title="">Headquarters</a></li>
                             <li><a href="#" title="">Regional Office</a></li>
                             <li><a href="#" title="">Local Office</a></li>
-                            <!-- <li><a href="admin.html">New Office</a></li> -->
                             <li><a href="#" data-toggle="collapse" data-target="#adminform">ATMs</a></li>
 
                         </ul>
@@ -258,34 +257,7 @@
 
             // Keycloak Config Start
 
-            var keyOptions = {
-                url: 'SSO_URL/auth',
-                realm: 'SSO_REALM',
-                clientId: 'CLIENT_ID'
-            };
-
-            var keycloak = Keycloak(keyOptions);
-            keycloak.init({ onLoad: 'check-sso' }).success(function (authenticated) {
-                if (authenticated) {
-                    $("<h4>Welcome " + keycloak.idTokenParsed.preferred_username + "</h4> ").insertBefore($('#mapid'));
-                    callService(mymap, keycloak.token);
-                    $('#mapid').show();
-                    $('#loginUrl').hide();
-                }
-                else {
-                    $('#mapid').hide();
-                    $('#loginUrl').show();
-                }
-            }).error(function (data) {
-                alert('Failed to initialize keycloak: ' + data);
-            });
-
-            var opts = {
-                redirectUri: window.location.origin + "/locations.html"
-            };
-
-            var loginUrl = keycloak.createLoginUrl(opts);
-            document.getElementById('loginUrl').href = loginUrl;
+            callService(mymap)
 
             // Keycloak Config End            
         });
@@ -294,7 +266,7 @@
         function getOfficeDetails (mapMarker, item){
             var office_id = item.id;
             $.ajax ({
-                url: 'http://localhost:8001/locations/phone/' + office_id,
+                url: 'API_BACKEND_URL' + '/phone/' + office_id,
                 dataType: 'json'
             }).done ( function (data){
                 mapMarker.bindPopup('<b>' + item.name + '</b><br>' + item.type + '<br>' + data.phone);
@@ -305,13 +277,14 @@
         }
 
         // GET THE LIST OF OFFICES FROM THE FUSE (ONLINE) SERVICE
-        function callService(map ,token){
+        function callService(map 
+            /* Keycloak Params Start*/ 
+
+            /* Keycloak Params End */){
             $.ajax({
                 url: 'API_BACKEND_URL',
                 // Keycloak Ajax Start
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
+
                 // Keycloak Ajax End
                 dataType: 'json'
             }).done(function(data) {
